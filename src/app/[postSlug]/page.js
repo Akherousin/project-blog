@@ -1,6 +1,7 @@
 import React from 'react';
 import { MDXRemote } from 'next-mdx-remote/rsc';
 import dynamic from 'next/dynamic';
+import { notFound } from 'next/navigation';
 
 import BlogHero from '@/components/BlogHero';
 
@@ -19,6 +20,8 @@ export async function generateMetadata({ params }) {
   const { postSlug } = params;
   const post = await loadBlogPost(postSlug);
 
+  if (!post) return null;
+
   return {
     title: post.frontmatter.title,
     description: post.frontmatter.abstract,
@@ -28,6 +31,8 @@ export async function generateMetadata({ params }) {
 async function BlogPost({ params }) {
   const { postSlug } = params;
   const post = await loadBlogPost(postSlug);
+
+  if (!post) notFound();
 
   return (
     <article className={styles.wrapper}>
