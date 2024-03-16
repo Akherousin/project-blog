@@ -1,5 +1,5 @@
 'use client';
-import React from 'react';
+import React, { useId } from 'react';
 import clsx from 'clsx';
 
 import { range } from '@/utils';
@@ -22,6 +22,8 @@ function DivisionGroupsDemo({
 
   const remainder = includeRemainderArea ? numOfItems % numOfGroups : null;
 
+  const uniqueId = useId();
+
   // When we're splitting into 1-3 groups, display side-by-side
   // columns. When we get to 4, it should switch to a 2x2 grid.
   const gridStructure =
@@ -35,9 +37,9 @@ function DivisionGroupsDemo({
         };
 
   return (
-    <Card as="section" className={styles.wrapper}>
-      <MotionConfig reducedMotion="user">
-        <LayoutGroup>
+    <MotionConfig reducedMotion="user">
+      <LayoutGroup>
+        <Card as="section" className={styles.wrapper}>
           <header className={styles.header}>
             <SliderControl
               label="Number of Groups"
@@ -55,11 +57,14 @@ function DivisionGroupsDemo({
               {range(numOfGroups).map((groupIndex) => (
                 <div key={groupIndex} className={styles.group}>
                   {range(numOfItemsPerGroup).map((index) => {
-                    const id = `${numOfItemsPerGroup * groupIndex + index}-id`;
+                    const id = `${
+                      numOfItemsPerGroup * groupIndex + index
+                    }-${uniqueId}`;
+
                     return (
                       <motion.div
-                        key={id}
                         layoutId={id}
+                        key={id}
                         className={styles.item}
                       />
                     );
@@ -74,7 +79,7 @@ function DivisionGroupsDemo({
               <p className={styles.remainderHeading}>Remainder Area</p>
 
               {range(remainder).map((index) => {
-                const id = `${numOfItems - index - 1}-id`;
+                const id = `${numOfItems - index - 1}-${uniqueId}`;
 
                 return (
                   <motion.div key={id} layoutId={id} className={styles.item} />
@@ -88,9 +93,9 @@ function DivisionGroupsDemo({
             divisor={numOfGroups}
             remainder={remainder}
           />
-        </LayoutGroup>
-      </MotionConfig>
-    </Card>
+        </Card>
+      </LayoutGroup>
+    </MotionConfig>
   );
 }
 
